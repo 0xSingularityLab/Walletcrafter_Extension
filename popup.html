@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>钱包工坊 WalletCrafter</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+<div class="wallet-card top-card">
+  <h1 id="mainTitle1">
+    <img src="assets/favicon.png" alt="icon">
+    <span id="mainTitle1Text">钱包工坊</span>
+  </h1>
+  <h1 id="mainTitle2">一键生成多链钱包（BTC/ETH/TRON/SOL/BCH/SUI/DOGE）</h1>
+  <h1 id="mainTitle3">无需联网，保存网页本地打开也可以生成钱包。</h1>
+
+  <div style="margin-bottom:10px;">
+    <button id="uiLangZh">中文</button>
+    <button id="uiLangEn">英文</button>
+  </div>
+
+  <div>
+    <label id="labelCount" for="mnemonicCount">生成助记词数量：</label>
+    <input type="number" id="mnemonicCount" value="1" min="1" style="width: 50px;">
+    <button id="generateBtn">生成助记词</button>
+  </div>
+
+  <br>
+  <div class="radio-group" id="mnemonicLangGroup">
+    <span id="labelMnemonicLang">助记词语言：</span>
+    <label>
+      <input type="radio" name="mnLang" value="en" checked>
+      <span id="labelEnRadio">英文助记词</span>
+    </label>
+    <label>
+      <input type="radio" name="mnLang" value="zh">
+      <span id="labelZhRadio">中文助记词</span>
+    </label>
+  </div>
+
+  <footer id="footer" style="margin:40px 0 20px 0; color:#2563eb; font-size:1.08em; font-weight:600;">
+    © <span id="footerYear"></span> Powered by 
+    <a href="https://www.singularitylab.top/" target="_blank" style="color:#2563eb; text-decoration:underline;">Singularity Lab</a>
+  </footer>
+</div>
+
+<div id="walletList"></div>
+
+<div id="copyTip" style="display:none;position:fixed;top:30px;left:50%;transform:translateX(-50%);background:#2563eb;color:#fff;padding:8px 24px;border-radius:16px;z-index:9999;font-size:1.1em;box-shadow:0 2px 8px #2563eb22;">复制成功</div>
+
+<script src="js/bundle.umd.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
