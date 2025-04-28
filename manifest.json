@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "WalletCrafter(钱包工坊) - 一键生成助记词",
+  "name": "WalletCrafter(钱包工坊) - 一键生成多链钱包助记词",
   "description": "一键生成多链助记词钱包地址（BTC/ETH/TRON/SOL/BCH/SUI/DOGE），完全离线生成。",
   "version": "1.0.0",
   "icons": {
