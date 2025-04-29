@@ -1,4 +1,3 @@
-
   //===============================================
   // 1. 界面多语言文本
   //===============================================
@@ -28,6 +27,8 @@
       fieldBCH: "BCH：",
       fieldSUI: "Sui：",
       fieldDOGE: "DOGE：",
+      generateSuccess: "生成成功",
+      copyAllInfo: "复制所有信息",
     },
     en: {
       pageTitle: "WalletCrafter - Craft your multichain wallet in seconds (BTC/ETH(EVM)/TRON/SOL/BCH/SUI/DOGE)",
@@ -54,6 +55,8 @@
       fieldBCH: "BCH:",
       fieldSUI: "Sui:",
       fieldDOGE: "DOGE:",
+      generateSuccess: "Generated!",
+      copyAllInfo: "Copy All Info",
     }
   };
 
@@ -72,6 +75,13 @@
     document.getElementById("labelEnRadio").textContent = translations[lang].labelEnRadio;
     document.getElementById("uiLangZh").textContent = translations[lang].uiLangZh;
     document.getElementById("uiLangEn").textContent = translations[lang].uiLangEn;
+    
+    // 更新复制所有信息按钮文本
+    const copyAllInfoBtn = document.getElementById('copyAllInfo');
+    if (copyAllInfoBtn) {
+      copyAllInfoBtn.textContent = translations[lang].copyAllInfo;
+    }
+    
     document.querySelectorAll('.social-icons [data-lang]').forEach(el => {
       el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
     });
@@ -101,6 +111,9 @@
         const { mnemonic, btcLegacyAddr, btcAddr, ethAddr, tronAddr, solAddr, bchCashAddr, suiAddr, dogeAddr } = generateOneWallet();
         wallets.push({ mnemonic, btcLegacyAddr, btcAddr, ethAddr, tronAddr, solAddr, bchCashAddr, suiAddr, dogeAddr });
       }
+      // 显示复制所有信息按钮
+      document.getElementById('copyAllInfoContainer').style.display = 'block';
+      initCopyAllInfoButton(); // 重新初始化按钮
     }
 
     // 渲染卡片（用 wallets 里的数据）
@@ -111,6 +124,8 @@
       card.innerHTML = `
         <div class="wallet-index">
           ${translations[currentUILang].fieldIndex}：${i + 1}
+        </div>
+        <div style="margin-bottom: 10px;">
           <button class="copy-all-btn" data-index="${i}">${translations[currentUILang].copyAll}</button>
         </div>
         <div class="wallet-field"><span class="field-label">${translations[currentUILang].fieldMnemonic}</span><span class="field-value">${w.mnemonic}</span>
@@ -178,7 +193,10 @@
   }
 
   // 3. 生成按钮事件，传 true
-  generateBtn.addEventListener('click', () => renderWallets(true));
+  generateBtn.addEventListener('click', () => {
+    renderWallets(true);
+    showCopyTipNearBtn(generateBtn, translations[currentUILang].generateSuccess);
+  });
 
   // 4. 切换语言时，只刷新UI和卡片，不生成新数据
   uiLangZhBtn.addEventListener('click', () => {
@@ -407,3 +425,50 @@
 
   // 自动设置年份
   document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+  // 添加复制所有信息按钮的初始化函数
+  function initCopyAllInfoButton() {
+    const copyAllInfoBtn = document.getElementById('copyAllInfo');
+    if (!copyAllInfoBtn) return;
+
+    // 更新按钮文本
+    copyAllInfoBtn.textContent = translations[currentUILang].copyAllInfo;
+    
+    // 移除现有的事件监听器
+    const newBtn = copyAllInfoBtn.cloneNode(true);
+    copyAllInfoBtn.parentNode.replaceChild(newBtn, copyAllInfoBtn);
+    
+    // 添加新的事件监听器
+    newBtn.addEventListener('click', () => {
+      if (!wallets || wallets.length === 0) {
+        showCopyTipNearBtn(newBtn, translations[currentUILang].copySuccess);
+        return;
+      }
+
+      const t = translations[currentUILang];
+      let allText = '';
+      
+      wallets.forEach((w, idx) => {
+        allText += `=== ${t.fieldIndex} ${idx + 1} ===\n`;
+        allText += `${t.fieldMnemonic}${w.mnemonic}\n`;
+        allText += `${t.fieldBTC}${w.btcAddr}\n`;
+        allText += `${t.fieldBTCLegacy}${w.btcLegacyAddr}\n`;
+        allText += `${t.fieldETH}${w.ethAddr}\n`;
+        allText += `${t.fieldTRON}${w.tronAddr}\n`;
+        allText += `${t.fieldSOL}${w.solAddr}\n`;
+        allText += `${t.fieldBCH}${w.bchCashAddr}\n`;
+        allText += `${t.fieldSUI}${w.suiAddr || ''}\n`;
+        allText += `${t.fieldDOGE}${w.dogeAddr || ''}\n\n`;
+      });
+
+      navigator.clipboard.writeText(allText).then(() => {
+        showCopyTipNearBtn(newBtn, translations[currentUILang].copySuccess);
+      }).catch(err => {
+        console.error('复制失败:', err);
+        showCopyTipNearBtn(newBtn, '复制失败，请重试');
+      });
+    });
+  }
+
+  // 在页面加载完成后初始化按钮
+  document.addEventListener('DOMContentLoaded', initCopyAllInfoButton);
